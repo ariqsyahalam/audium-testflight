@@ -1,69 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TestFlight Installation Guide</title>
-</head>
-<body>
-    <h1>Welcome to Our App Testing</h1>
-    <p id="message">Checking your device compatibility...</p>
-    <button id="testflightButton" style="display:none;" onclick="installTestFlight()">Install TestFlight</button>
-    <button id="invitationButton" style="display:none;" onclick="redirectToInvitation()">Open TestFlight Invitation</button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>App Test Guide</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Google Font Inter -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Custom primary color */
+      .btn-primary {
+        background-color: #4361ee !important;
+        color: #ffffff !important;
+        border-color: #4361ee !important;
+        border-radius: 30px !important;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f8f9fa;
+        padding: 20px;
+      }
+      h1,
+      h2 {
+        font-weight: 700;
+      }
+      .step-card {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 20px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .btn-custom {
+        width: 100%;
+        margin-top: 10px;
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container text-center">
+      <h1 class="text-primary">Welcome to Our App Testing</h1>
+
+      <!-- Step 1: Install TestFlight Card -->
+      <div id="step1" class="step-card" style="display: none">
+        <h2 class="text-primary">Step 1</h2>
+        <p>Please install TestFlight to continue.</p>
+        <button
+          class="btn btn-primary btn-custom"
+          onclick="installTestFlight()"
+        >
+          Install TestFlight
+        </button>
+      </div>
+
+      <!-- Step 2: Open Invitation Link Card -->
+      <div id="step2" class="step-card" style="display: none">
+        <h2 class="text-primary">Step 2</h2>
+        <p>
+          Once TestFlight is installed, click the button below to open the app
+          invitation.
+        </p>
+        <button
+          class="btn btn-primary btn-custom"
+          onclick="redirectToInvitation()"
+        >
+          Open TestFlight Invitation
+        </button>
+      </div>
+    </div>
+
+    <!-- Bootstrap and jQuery JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
-        // Placeholder for TestFlight link
-        const invitationLink = "https://testflight.apple.com/join/YOUR_APP_LINK";
+      // Placeholder for TestFlight link
+      const invitationLink = "https://testflight.apple.com/join/YOUR_APP_LINK";
 
-        // Function to detect iOS version
-        function getiOSVersion() {
-            const ua = navigator.userAgent;
-            const match = ua.match(/OS (\d+)_/);
-            return match ? parseInt(match[1], 10) : null;
+      // Function to detect iOS version
+      function getiOSVersion() {
+        const ua = navigator.userAgent;
+        const match = ua.match(/OS (\d+)_/);
+        return match ? parseInt(match[1], 10) : null;
+      }
+
+      // Function to detect if the device is iOS
+      function isIOS() {
+        return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      }
+
+      // Function to redirect to TestFlight installation on App Store
+      function installTestFlight() {
+        window.location.href =
+          "https://apps.apple.com/us/app/testflight/id899247664";
+      }
+
+      // Function to redirect to TestFlight invitation link
+      function redirectToInvitation() {
+        window.location.href = invitationLink;
+      }
+
+      // Main function to check device compatibility
+      function checkDeviceCompatibility() {
+        if (!isIOS()) {
+          document.getElementById("step1").innerHTML =
+            "<p class='text-danger'>This guide is only for iOS devices.</p>";
+          return;
         }
 
-        // Function to detect if the device is iOS
-        function isIOS() {
-            return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const iOSVersion = getiOSVersion();
+        if (iOSVersion && iOSVersion >= 16) {
+          document.getElementById("step1").style.display = "block"; // Show Step 1
+          document.getElementById("step2").style.display = "block"; // Show Step 2
+        } else {
+          document.getElementById("step1").innerHTML =
+            "<p class='text-danger'>Your iOS version is below 16. Please update your iOS version.</p>";
         }
+      }
 
-        // Function to check if TestFlight is installed
-        function checkTestFlightInstalled() {
-            window.location = "itms-beta://";
-            setTimeout(() => {
-                document.getElementById("message").textContent = "TestFlight is not installed. Please install it to continue.";
-                document.getElementById("testflightButton").style.display = "block";
-            }, 2000);
-        }
-
-        // Function to redirect to TestFlight installation on App Store
-        function installTestFlight() {
-            window.location.href = "https://apps.apple.com/us/app/testflight/id899247664";
-        }
-
-        // Function to redirect to TestFlight invitation link
-        function redirectToInvitation() {
-            window.location.href = invitationLink;
-        }
-
-        // Main function to check device compatibility and TestFlight status
-        function checkDeviceCompatibility() {
-            if (!isIOS()) {
-                document.getElementById("message").textContent = "This guide is only for iOS devices.";
-                return;
-            }
-
-            const iOSVersion = getiOSVersion();
-            if (iOSVersion && iOSVersion >= 16) {
-                document.getElementById("message").textContent = "Your device is compatible. Checking TestFlight status...";
-                checkTestFlightInstalled();
-            } else {
-                document.getElementById("message").textContent = "Your iOS version is below 16. Please update your iOS version.";
-            }
-        }
-
-        // Run the compatibility check on page load
-        checkDeviceCompatibility();
+      // Run the compatibility check on page load
+      checkDeviceCompatibility();
     </script>
-</body>
+  </body>
 </html>
