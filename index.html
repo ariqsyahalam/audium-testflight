@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TestFlight Installation Guide</title>
+</head>
+<body>
+    <h1>Welcome to Our App Testing</h1>
+    <p id="message">Checking your device compatibility...</p>
+    <button id="testflightButton" style="display:none;" onclick="installTestFlight()">Install TestFlight</button>
+    <button id="invitationButton" style="display:none;" onclick="redirectToInvitation()">Open TestFlight Invitation</button>
+
+    <script>
+        // Placeholder for TestFlight link
+        const invitationLink = "https://testflight.apple.com/join/YOUR_APP_LINK";
+
+        // Function to detect iOS version
+        function getiOSVersion() {
+            const ua = navigator.userAgent;
+            const match = ua.match(/OS (\d+)_/);
+            return match ? parseInt(match[1], 10) : null;
+        }
+
+        // Function to detect if the device is iOS
+        function isIOS() {
+            return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        }
+
+        // Function to check if TestFlight is installed
+        function checkTestFlightInstalled() {
+            window.location = "itms-beta://";
+            setTimeout(() => {
+                document.getElementById("message").textContent = "TestFlight is not installed. Please install it to continue.";
+                document.getElementById("testflightButton").style.display = "block";
+            }, 2000);
+        }
+
+        // Function to redirect to TestFlight installation on App Store
+        function installTestFlight() {
+            window.location.href = "https://apps.apple.com/us/app/testflight/id899247664";
+        }
+
+        // Function to redirect to TestFlight invitation link
+        function redirectToInvitation() {
+            window.location.href = invitationLink;
+        }
+
+        // Main function to check device compatibility and TestFlight status
+        function checkDeviceCompatibility() {
+            if (!isIOS()) {
+                document.getElementById("message").textContent = "This guide is only for iOS devices.";
+                return;
+            }
+
+            const iOSVersion = getiOSVersion();
+            if (iOSVersion && iOSVersion >= 16) {
+                document.getElementById("message").textContent = "Your device is compatible. Checking TestFlight status...";
+                checkTestFlightInstalled();
+            } else {
+                document.getElementById("message").textContent = "Your iOS version is below 16. Please update your iOS version.";
+            }
+        }
+
+        // Run the compatibility check on page load
+        checkDeviceCompatibility();
+    </script>
+</body>
+</html>
